@@ -2,7 +2,7 @@ packageName := $(shell grep Package pkg/DESCRIPTION | cut -d ':' -f 2 | sed -e '
 packageVersion := $(shell grep Version pkg/DESCRIPTION | cut -d ':' -f 2 | sed -e 's/^[[:space:]]*//g')
 tarballName := $(packageName)_$(packageVersion).tar.gz
 
-.PHONY: build check install test
+.PHONY: build check install test rhub
 
 build:
 	R CMD build pkg
@@ -15,3 +15,6 @@ install: build
 
 test: install
 	Rscript -e 'testthat::test_dir("pkg/tests")'
+
+rhub: build
+	Rscript -e 'rhub::check_for_cran("$(tarballName)")'
