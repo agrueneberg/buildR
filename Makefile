@@ -8,10 +8,12 @@ build:
 	R CMD build pkg
 
 check: build
-	R CMD check $(tarballName)
+	mkdir -p checks
+	R CMD check -o checks $(tarballName)
 
 check-as-cran: build
-	R CMD check --as-cran $(tarballName)
+	mkdir -p checks
+	R CMD check -o checks --as-cran $(tarballName)
 
 install: build
 	R CMD INSTALL $(tarballName)
@@ -23,14 +25,13 @@ rhub: build
 	Rscript -e 'rhub::check_for_cran("$(tarballName)")'
 
 revdepcheck: build
-	mkdir -p revdepcheck
-	cp $(tarballName) revdepcheck
-	Rscript -e 'summary(tools::check_packages_in_dir("revdepcheck", reverse = list()))'
+	mkdir -p checks
+	cp $(tarballName) checks
+	Rscript -e 'summary(tools::check_packages_in_dir("checks", reverse = list()))'
 
 spellcheck: build
 	Rscript -e 'spelling::spell_check_package("pkg")'
 
 clean:
 	rm -f $(tarballName)
-	rm -fr $(packageName).Rcheck
-	rm -fr revdepcheck/
+	rm -fr checks/
