@@ -18,12 +18,12 @@ check-as-cran: build
 check-reverse-dependencies: build
 	mkdir -p checks
 	cp $(tarballName) checks
-	Rscript -e 'summary(tools::check_packages_in_dir("checks", reverse = list()))'
+	Rscript -e 'setRepositories(ind = c(1, 2)); summary(tools::check_packages_in_dir("checks", reverse = list()))'
 
 check-all-reverse-dependencies: build
 	mkdir -p checks
 	cp $(tarballName) checks
-	Rscript -e 'summary(tools::check_packages_in_dir("checks", reverse = list(which = "all")))'
+	Rscript -e 'setRepositories(ind = c(1, 2)); summary(tools::check_packages_in_dir("checks", reverse = list(which = "all")))'
 
 install: build
 	R CMD INSTALL $(tarballName)
