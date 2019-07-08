@@ -2,7 +2,7 @@ packageName := $(shell grep '^Package:' pkg/DESCRIPTION | cut -d ':' -f 2 | sed 
 packageVersion := $(shell grep '^Version:' pkg/DESCRIPTION | cut -d ':' -f 2 | sed -e 's/^[[:space:]]*//g')
 tarballName := $(packageName)_$(packageVersion).tar.gz
 
-.PHONY: build check check-as-cran check-reverse-dependencies check-all-reverse-dependencies install test rhub spellcheck clean
+.PHONY: build check check-as-cran check-reverse-dependencies check-all-reverse-dependencies install test-testthat rhub spellcheck clean
 
 build:
 	R CMD build pkg
@@ -28,7 +28,7 @@ check-all-reverse-dependencies: build
 install: build
 	R CMD INSTALL $(tarballName)
 
-test: install
+test-testthat: install
 	Rscript -e 'library(testthat); library($(packageName)); test_dir("pkg/tests/testthat")'
 
 rhub: build
