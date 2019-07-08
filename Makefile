@@ -29,7 +29,7 @@ install: build
 	R CMD INSTALL $(tarballName)
 
 test-testthat: install
-	Rscript -e 'library(testthat); library($(packageName)); test_dir("pkg/tests/testthat")'
+	Rscript -e 'library($(packageName)); testthat::test_dir("pkg/tests/testthat")'
 
 rhub: build
 	Rscript -e 'rhub::check_for_cran("$(tarballName)")'
