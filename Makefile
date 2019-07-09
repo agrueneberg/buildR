@@ -35,8 +35,8 @@ install: build
 test-testthat: install-tmp
 	Rscript -e 'library($(packageName), lib = "lib"); testthat::test_dir("pkg/tests/testthat")'
 
-test-tinytest:
-	Rscript -e 'tinytest::build_install_test("pkg")'
+test-tinytest: install-tmp
+	Rscript -e 'library($(packageName), lib = "lib"); tinytest::test_package("$(packageName)")'
 
 rhub: build
 	Rscript -e 'rhub::check_for_cran("$(tarballName)")'
