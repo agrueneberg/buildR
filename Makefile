@@ -2,7 +2,7 @@ packageName := $(shell grep '^Package:' pkg/DESCRIPTION | cut -d ':' -f 2 | sed 
 packageVersion := $(shell grep '^Version:' pkg/DESCRIPTION | cut -d ':' -f 2 | sed -e 's/^[[:space:]]*//g')
 tarballName := $(packageName)_$(packageVersion).tar.gz
 
-.PHONY: build check check-as-cran check-reverse-dependencies check-all-reverse-dependencies install test-testthat test-tinytest rhub spellcheck clean
+.PHONY: build check check-as-cran check-reverse-dependencies check-all-reverse-dependencies install-tmp install test-testthat test-tinytest rhub spellcheck clean
 
 build:
 	R CMD build pkg
@@ -25,6 +25,10 @@ check-all-reverse-dependencies: build
 	cp $(tarballName) checks
 	Rscript -e 'setRepositories(ind = c(1, 2)); summary(tools::check_packages_in_dir("checks", reverse = list(which = "all")))'
 
+install-tmp: build
+	mkdir -p lib
+	R CMD INSTALL -l lib $(tarballName)
+
 install: build
 	R CMD INSTALL $(tarballName)
 
@@ -43,3 +47,4 @@ spellcheck: build
 clean:
 	rm -f $(tarballName)
 	rm -fr checks/
+	rm -fr lib/
