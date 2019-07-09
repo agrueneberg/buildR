@@ -2,7 +2,7 @@ packageName := $(shell grep '^Package:' pkg/DESCRIPTION | cut -d ':' -f 2 | sed 
 packageVersion := $(shell grep '^Version:' pkg/DESCRIPTION | cut -d ':' -f 2 | sed -e 's/^[[:space:]]*//g')
 tarballName := $(packageName)_$(packageVersion).tar.gz
 
-.PHONY: build check check-as-cran check-reverse-dependencies check-all-reverse-dependencies install-tmp install test-testthat test-tinytest rhub spellcheck clean
+.PHONY: build check check-as-cran check-reverse-dependencies check-all-reverse-dependencies install-tmp test-testthat test-tinytest install rhub spellcheck clean
 
 build:
 	R CMD build pkg
@@ -29,14 +29,14 @@ install-tmp: build
 	mkdir -p lib
 	R CMD INSTALL -l lib $(tarballName)
 
-install: build
-	R CMD INSTALL $(tarballName)
-
 test-testthat: install-tmp
 	Rscript -e 'library($(packageName), lib = "lib"); testthat::test_dir("pkg/tests/testthat")'
 
 test-tinytest: install-tmp
 	Rscript -e 'library($(packageName), lib = "lib"); tinytest::test_package("$(packageName)")'
+
+install: build
+	R CMD INSTALL $(tarballName)
 
 rhub: build
 	Rscript -e 'rhub::check_for_cran("$(tarballName)")'
