@@ -8,25 +8,25 @@ build:
 	R CMD build pkg
 
 check: build
-	mkdir -p checks
+	@mkdir -p checks
 	R CMD check -o checks $(tarballName)
 
 check-as-cran: build
-	mkdir -p checks
+	@mkdir -p checks
 	R CMD check -o checks --as-cran $(tarballName)
 
 check-reverse-dependencies: build
-	mkdir -p checks
+	@mkdir -p checks
 	cp $(tarballName) checks
 	Rscript -e 'setRepositories(ind = c(1, 2)); summary(tools::check_packages_in_dir("checks", reverse = list()))'
 
 check-all-reverse-dependencies: build
-	mkdir -p checks
+	@mkdir -p checks
 	cp $(tarballName) checks
 	Rscript -e 'setRepositories(ind = c(1, 2)); summary(tools::check_packages_in_dir("checks", reverse = list(which = "all")))'
 
 install-tmp: build
-	mkdir -p lib
+	@mkdir -p lib
 	R CMD INSTALL -l lib $(tarballName)
 
 test-testthat: install-tmp
