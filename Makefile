@@ -2,14 +2,21 @@ packageName := $(shell grep '^Package:' pkg/DESCRIPTION | cut -d ':' -f 2 | sed 
 packageVersion := $(shell grep '^Version:' pkg/DESCRIPTION | cut -d ':' -f 2 | sed -e 's/^[[:space:]]*//g')
 tarballName := $(packageName)_$(packageVersion).tar.gz
 
-.PHONY: build check check-as-cran check-reverse-dependencies check-all-reverse-dependencies install-tmp test-testthat test-tinytest load install rhub spellcheck clean
+.PHONY: build build-no-latex check check-no-latex check-as-cran check-reverse-dependencies check-all-reverse-dependencies install-tmp test-testthat test-tinytest load install rhub spellcheck clean
 
 build:
 	R CMD build pkg
 
+build-no-latex:
+	R CMD build --no-manual --no-build-vignettes pkg
+
 check: build
 	@mkdir -p checks
 	R CMD check -o checks $(tarballName)
+
+check-no-latex: build-no-latex
+	@mkdir -p checks
+	R CMD check -o checks --no-manual --no-build-vignettes $(tarballName)
 
 check-as-cran: build
 	@mkdir -p checks
