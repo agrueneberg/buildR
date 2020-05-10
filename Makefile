@@ -32,7 +32,7 @@ check-all-reverse-dependencies: build
 	cp $(tarballName) checks
 	Rscript -e 'setRepositories(ind = c(1, 2)); summary(tools::check_packages_in_dir("checks", reverse = list(which = "all")))'
 
-install-tmp: build
+install-tmp: build-no-latex
 	@mkdir -p lib
 	R CMD INSTALL -l lib $(tarballName)
 
