@@ -2,7 +2,7 @@ packageName := $(shell grep '^Package:' pkg/DESCRIPTION | cut -d ':' -f 2 | sed 
 packageVersion := $(shell grep '^Version:' pkg/DESCRIPTION | cut -d ':' -f 2 | sed -e 's/^[[:space:]]*//g')
 tarballName := $(packageName)_$(packageVersion).tar.gz
 
-.PHONY: build build-no-latex check check-no-latex check-as-cran check-reverse-dependencies check-all-reverse-dependencies install-tmp test-testthat test-tinytest load install rhub spellcheck clean
+.PHONY: build build-no-latex check check-no-latex check-as-cran check-reverse-dependencies check-all-reverse-dependencies install-tmp test-testthat test-tinytest load install spellcheck clean
 
 build:
 	R CMD build pkg
@@ -47,9 +47,6 @@ load: install-tmp
 
 install: build
 	R CMD INSTALL $(tarballName)
-
-rhub: build
-	Rscript -e 'rhub::check_for_cran("$(tarballName)")'
 
 spellcheck: build
 	Rscript -e 'spelling::spell_check_package("pkg")'
